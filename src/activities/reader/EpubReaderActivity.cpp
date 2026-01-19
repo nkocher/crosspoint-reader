@@ -191,31 +191,21 @@ void EpubReaderActivity::loop() {
             }
             case EpubReaderMenuActivity::MenuAction::DELETE_CACHE: {
               xSemaphoreTake(renderingMutex, portMAX_DELAY);
-              section.reset();
               if (epub) {
-                      // 2. BACKUP: Read current progress
-                      // We use the current variables that track our position
-                      uint16_t backupSpine = currentSpineIndex;
-                      uint16_t backupPage = nextPageNumber;
+                // 2. BACKUP: Read current progress
+                // We use the current variables that track our position
+                uint16_t backupSpine = currentSpineIndex;
+                uint16_t backupPage = section->currentPage;
 
-                      // 3. WIPE: Clear the cache directory
-                      epub->clearCache();
+                section.reset();
+                // 3. WIPE: Clear the cache directory
+                epub->clearCache();
 
-                      // 4. RESTORE: Re-setup the directory and rewrite the progress file
-                      epub->setupCacheDir();
+                // 4. RESTORE: Re-setup the directory and rewrite the progress file
+                epub->setupCacheDir();
 
-                      FsFile f;
-                      if (SdMan.openFileForWrite("ERS", epub->getCachePath() + "/progress.bin", f)) {
-                          uint8_t data[4];
-                          data[0] = backupSpine & 0xFF;
-                          data[1] = (backupSpine >> 8) & 0xFF;
-                          data[2] = backupPage & 0xFF;
-                          data[3] = (backupPage >> 8) & 0xFF;
-                          f.write(data, 4);
-                          f.close();
-                          Serial.println("[ERS] Progress restored after cache clear");
-                      }
-                  }
+                saveProgress(backupSpine, backupPage);
+              }
               exitActivity();
               updateRequired = true;
               xSemaphoreGive(renderingMutex);
@@ -476,9 +466,13 @@ void EpubReaderActivity::renderScreen() {
     renderContents(std::move(p), orientedMarginTop, orientedMarginRight, orientedMarginBottom, orientedMarginLeft);
     Serial.printf("[%lu] [ERS] Rendered page in %dms\n", millis(), millis() - start);
   }
+  saveProgress(currentSpineIndex, section->currentPage);
+}
 
+void EpubReaderActivity::saveProgress(int spineIndex, int page) {
   FsFile f;
   if (SdMan.openFileForWrite("ERS", epub->getCachePath() + "/progress.bin", f)) {
+<<<<<<< HEAD
     uint8_t data[6];
     data[0] = currentSpineIndex & 0xFF;
     data[1] = (currentSpineIndex >> 8) & 0xFF;
@@ -487,10 +481,20 @@ void EpubReaderActivity::renderScreen() {
     data[4] = section->pageCount & 0xFF;
     data[5] = (section->pageCount >> 8) & 0xFF;
     f.write(data, 6);
+=======
+    uint8_t data[4];
+    data[0] = spineIndex & 0xFF;
+    data[1] = (spineIndex >> 8) & 0xFF;
+    data[2] = page & 0xFF;
+    data[3] = (page >> 8) & 0xFF;
+    f.write(data, 4);
+>>>>>>> 95b7f80 (Refactor saving progress to dedicated function.)
     f.close();
+    Serial.printf("[ERS] Progress saved: Chapter %d, Page %d\n", spineIndex, page);
+  } else {
+    Serial.printf("[ERS] Could not save progress!\n");
   }
 }
-
 void EpubReaderActivity::renderContents(std::unique_ptr<Page> page, const int orientedMarginTop,
                                         const int orientedMarginRight, const int orientedMarginBottom,
                                         const int orientedMarginLeft) {
