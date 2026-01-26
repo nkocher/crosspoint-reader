@@ -1,5 +1,4 @@
 #pragma once
-#include <functional>
 #include <memory>
 
 #include "Epub.h"
@@ -32,7 +31,6 @@ class Section {
                        uint16_t viewportWidth, uint16_t viewportHeight, bool hyphenationEnabled);
   bool clearCache() const;
   bool createSectionFile(int fontId, float lineCompression, bool extraParagraphSpacing, uint8_t paragraphAlignment,
-                         uint16_t viewportWidth, uint16_t viewportHeight, bool hyphenationEnabled,
-                         const std::function<void(int)>& progressFn = nullptr);
+                         uint16_t viewportWidth, uint16_t viewportHeight, bool hyphenationEnabled);
   std::unique_ptr<Page> loadPageFromSectionFile();
 };

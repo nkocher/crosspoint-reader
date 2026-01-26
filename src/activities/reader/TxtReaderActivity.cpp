@@ -188,11 +188,10 @@ void TxtReaderActivity::buildPageIndex() {
 
   size_t offset = 0;
   const size_t fileSize = txt->getFileSize();
-  int lastProgressPercent = -1;
 
   Serial.printf("[%lu] [TRS] Building page index for %zu bytes...\n", millis(), fileSize);
 
-  const auto popupLayout = ScreenComponents::drawPopup(renderer, "Indexing...");
+  ScreenComponents::drawPopup(renderer, "Indexing...");
 
   while (offset < fileSize) {
     std::vector<std::string> tempLines;
@@ -210,15 +209,6 @@ void TxtReaderActivity::buildPageIndex() {
     offset = nextOffset;
     if (offset < fileSize) {
       pageOffsets.push_back(offset);
-    }
-
-    // Update progress bar every 10% (matching EpubReaderActivity logic)
-    int progressPercent = (offset * 100) / fileSize;
-    if (lastProgressPercent / 10 != progressPercent / 10) {
-      lastProgressPercent = progressPercent;
-
-      // Fill progress bar
-      ScreenComponents::fillPopupProgress(renderer, popupLayout, progressPercent);
     }
 
     // Yield to other tasks periodically
