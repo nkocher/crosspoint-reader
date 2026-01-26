@@ -484,7 +484,9 @@ bool Epub::generateCoverHomeBmp() const {
     // Calculate proportional width for 400px height
     const int targetWidth = (400 * jpegWidth) / jpegHeight;
 
-    const bool success = JpegToBmpConverter::jpegFileTo1BitBmpStreamWithSize(coverJpg, homeBmp, targetWidth, HOME_TARGET_HEIGHT);
+    const bool success =
+        JpegToBmpConverter::jpegFileTo1BitBmpStreamWithSize(coverJpg, homeBmp, targetWidth,
+                                                           HOME_TARGET_HEIGHT);
     coverJpg.close();
     homeBmp.close();
     SdMan.remove(coverJpgTempPath.c_str());
