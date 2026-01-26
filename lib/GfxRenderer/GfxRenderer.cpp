@@ -642,6 +642,8 @@ uint8_t* GfxRenderer::getFrameBuffer() const { return einkDisplay.getFrameBuffer
 
 size_t GfxRenderer::getBufferSize() { return EInkDisplay::BUFFER_SIZE; }
 
+void GfxRenderer::grayscaleRevert() const { einkDisplay.grayscaleRevert(); }
+
 void GfxRenderer::copyGrayscaleLsbBuffers() const { einkDisplay.copyGrayscaleLsbBuffers(einkDisplay.getFrameBuffer()); }
 
 void GfxRenderer::copyGrayscaleMsbBuffers() const { einkDisplay.copyGrayscaleMsbBuffers(einkDisplay.getFrameBuffer()); }

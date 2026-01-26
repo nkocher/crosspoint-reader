@@ -285,7 +285,6 @@ void EpubReaderActivity::renderScreen() {
                                   viewportHeight, SETTINGS.hyphenationEnabled)) {
       Serial.printf("[%lu] [ERS] Cache not found, building...\n", millis());
 
-      pagesUntilFullRefresh = 0;
       const auto popupLayout = ScreenComponents::drawPopup(renderer, "Indexing...");
       const auto progressCallback = [this, popupLayout](int progress) {
         ScreenComponents::fillPopupProgress(renderer, popupLayout, progress);
