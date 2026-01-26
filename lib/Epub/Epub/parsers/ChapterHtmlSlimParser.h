@@ -2,8 +2,8 @@
 
 #include <expat.h>
 
-#include <cstddef>
 #include <climits>
+#include <cstddef>
 #include <functional>
 #include <memory>
 

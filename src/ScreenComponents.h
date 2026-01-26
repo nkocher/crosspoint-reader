@@ -13,10 +13,6 @@ struct TabInfo {
 
 class ScreenComponents {
  public:
-  static constexpr int POPUP_DEFAULT_MIN_WIDTH = 130;
-  static constexpr int POPUP_DEFAULT_MIN_HEIGHT = 50;
-  static constexpr int POPUP_DEFAULT_BAR_HEIGHT = 4;
-
   struct PopupLayout {
     int x;
     int y;

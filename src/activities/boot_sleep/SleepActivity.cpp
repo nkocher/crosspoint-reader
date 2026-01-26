@@ -8,18 +8,15 @@
 
 #include "CrossPointSettings.h"
 #include "CrossPointState.h"
+#include "ScreenComponents.h"
 #include "fontIds.h"
 #include "images/CrossLarge.h"
 #include "util/StringUtils.h"
-#include "ScreenComponents.h"
 
 void SleepActivity::onEnter() {
   Activity::onEnter();
 
   ScreenComponents::drawPopup(renderer, "Sleeping");
-
-  // debug delay to see sleep screen
-  delay(5000);
 
   if (SETTINGS.sleepScreen == CrossPointSettings::SLEEP_SCREEN_MODE::BLANK) {
     return renderBlankSleepScreen();

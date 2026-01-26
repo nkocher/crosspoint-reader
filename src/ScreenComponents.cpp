@@ -43,38 +43,31 @@ void ScreenComponents::drawBattery(const GfxRenderer& renderer, const int left, 
 }
 
 ScreenComponents::PopupLayout ScreenComponents::drawPopup(const GfxRenderer& renderer, const char* message) {
-  constexpr int margin = 12;
-  constexpr int frameThickness = 4;
-  constexpr int frameInset = frameThickness / 2;
-  constexpr int frameRadius = 8;
-  constexpr int bottomOffset = 20;
+  constexpr int margin = 15;
+  constexpr int y = 60;
   const int textWidth = renderer.getTextWidth(UI_12_FONT_ID, message, EpdFontFamily::BOLD);
-  const int w = std::max(textWidth, POPUP_DEFAULT_MIN_WIDTH) + margin * 2;
-  const int h = std::max(renderer.getLineHeight(UI_12_FONT_ID) + margin * 2, POPUP_DEFAULT_MIN_HEIGHT);
-  const int x = std::max(0, (renderer.getScreenWidth() - w) / 2);
-  const int y = std::max(0, renderer.getScreenHeight() - h - margin - bottomOffset);
+  const int textHeight = renderer.getLineHeight(UI_12_FONT_ID);
+  const int w = textWidth + margin * 2;
+  const int h = textHeight + margin * 2;
+  const int x = (renderer.getScreenWidth() - w) / 2;
 
-  renderer.drawRoundedRectFrame(x - frameInset, y - frameInset, w + frameInset * 2, h + frameInset * 2,
-                                frameRadius, frameThickness, true, false);
+  renderer.fillRect(x - 2, y - 2, w + 4, h + 4, true);  // frame thickness 2
+  renderer.fillRect(x, y, w, h, false);
 
   const int textX = x + (w - textWidth) / 2;
-  renderer.drawText(UI_12_FONT_ID, textX, y + margin - 2, message, true, EpdFontFamily::BOLD);
+  const int textY = y + margin - 2;
+  renderer.drawText(UI_12_FONT_ID, textX, textY, message, true, EpdFontFamily::BOLD);
   renderer.displayBuffer();
   return {x, y, w, h};
 }
 
 void ScreenComponents::fillPopupProgress(const GfxRenderer& renderer, const PopupLayout& layout, const int progress) {
-  constexpr int barWidth = POPUP_DEFAULT_MIN_WIDTH;
-  constexpr int barHeight = POPUP_DEFAULT_BAR_HEIGHT;
+  constexpr int barHeight = 4;
+  const int barWidth = layout.width - 30;  // twice the margin in drawPopup to match text width
   const int barX = layout.x + (layout.width - barWidth) / 2;
-  const int barY = layout.y + layout.height - 13;
+  const int barY = layout.y + layout.height - 10;
 
   int fillWidth = barWidth * progress / 100;
-  if (fillWidth < 0) {
-    fillWidth = 0;
-  } else if (fillWidth > barWidth) {
-    fillWidth = barWidth;
-  }
 
   renderer.fillRect(barX, barY, fillWidth, barHeight, true);
 
