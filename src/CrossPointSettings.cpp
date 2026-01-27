@@ -40,7 +40,6 @@ bool CrossPointSettings::saveToFile() const {
   serialization::writePod(outputFile, sleepScreen);
   serialization::writePod(outputFile, extraParagraphSpacing);
   serialization::writePod(outputFile, shortPwrBtn);
-  serialization::writePod(outputFile, powerButtonHoldDuration);
   serialization::writePod(outputFile, statusBar);
   serialization::writePod(outputFile, orientation);
   serialization::writePod(outputFile, frontButtonLayout);
@@ -61,6 +60,7 @@ bool CrossPointSettings::saveToFile() const {
   serialization::writeString(outputFile, std::string(opdsUsername));
   serialization::writeString(outputFile, std::string(opdsPassword));
   serialization::writePod(outputFile, sleepScreenCoverFilter);
+  serialization::writePod(outputFile, powerButtonHoldDuration);
   // New fields added at end for backward compatibility
   outputFile.close();
 
@@ -93,8 +93,6 @@ bool CrossPointSettings::loadFromFile() {
     serialization::readPod(inputFile, extraParagraphSpacing);
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, shortPwrBtn, SHORT_PWRBTN_COUNT);
-    if (++settingsRead >= fileSettingsCount) break;
-    serialization::readPod(inputFile, powerButtonHoldDuration);
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, statusBar, STATUS_BAR_MODE_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
@@ -150,6 +148,8 @@ bool CrossPointSettings::loadFromFile() {
     }
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, sleepScreenCoverFilter, SLEEP_SCREEN_COVER_FILTER_COUNT);
+    if (++settingsRead >= fileSettingsCount) break;
+    serialization::readPod(inputFile, powerButtonHoldDuration);
     if (++settingsRead >= fileSettingsCount) break;
     // New fields added at end for backward compatibility
   } while (false);
