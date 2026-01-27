@@ -316,6 +316,7 @@ void setup() {
   Serial.printf("[%lu] [   ] Starting CrossPoint version " CROSSPOINT_VERSION "\n", millis());
 
   setupDisplayAndFonts();
+
   exitActivity();
   enterNewActivity(new BootActivity(renderer, mappedInputManager));
 
