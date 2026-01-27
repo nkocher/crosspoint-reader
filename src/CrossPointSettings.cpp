@@ -22,7 +22,7 @@ void readAndValidate(FsFile& file, uint8_t& member, const uint8_t maxValue) {
 namespace {
 constexpr uint8_t SETTINGS_FILE_VERSION = 1;
 // Increment this when adding new persisted settings fields
-constexpr uint8_t SETTINGS_COUNT = 23;
+constexpr uint8_t SETTINGS_COUNT = 24;
 constexpr char SETTINGS_FILE[] = "/.crosspoint/settings.bin";
 }  // namespace
 
@@ -40,6 +40,7 @@ bool CrossPointSettings::saveToFile() const {
   serialization::writePod(outputFile, sleepScreen);
   serialization::writePod(outputFile, extraParagraphSpacing);
   serialization::writePod(outputFile, shortPwrBtn);
+  serialization::writePod(outputFile, powerButtonHoldDuration);
   serialization::writePod(outputFile, statusBar);
   serialization::writePod(outputFile, orientation);
   serialization::writePod(outputFile, frontButtonLayout);
@@ -92,6 +93,8 @@ bool CrossPointSettings::loadFromFile() {
     serialization::readPod(inputFile, extraParagraphSpacing);
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, shortPwrBtn, SHORT_PWRBTN_COUNT);
+    if (++settingsRead >= fileSettingsCount) break;
+    serialization::readPod(inputFile, powerButtonHoldDuration);
     if (++settingsRead >= fileSettingsCount) break;
     readAndValidate(inputFile, statusBar, STATUS_BAR_MODE_COUNT);
     if (++settingsRead >= fileSettingsCount) break;
