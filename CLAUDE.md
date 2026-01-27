@@ -12,14 +12,18 @@ CrossPoint Reader is an open-source firmware replacement for the Xteink X4 e-pap
 
 **Base**: v0.16.0 + PRs #442, #506, #433
 
-This branch is a clean v16.0 custom build with three upstream PRs merged and tested.
+Custom v0.16.0 build with popup refactoring, power button hold duration, and reading menu features.
 
-### Merged PRs
-| PR | Feature | Notes |
-|----|---------|-------|
-| #442 | Popup logic refactoring | Removed popups for small chapters (5s faster) |
-| #506 | Power button hold duration | Configurable: 0.5s (default), 1s, 2s |
-| #433 | Reading menu + delete cache | Null-check fix applied, callbacks flattened |
+### Recent Commits (newest first)
+| Commit | Description |
+|--------|-------------|
+| cae74ec | build: Update v16.0 custom firmware with serialization fix |
+| acc33d4 | fix: Move powerButtonHoldDuration to end of serialization |
+| 7c49a2a | docs: Update CLAUDE.md for v16.0 custom build |
+| bbbde71 | fix: Add null checks for section in delete cache |
+| 8cc4618 | Merge branch 'pr-433' into custom-v16 |
+| e83a70c | Merge branch 'pr-506' into custom-v16 |
+| fd0e025 | Merge branch 'pr-442' into custom-v16 |
 
 ## Repository Structure
 
@@ -79,7 +83,8 @@ pio run -t upload --upload-port /dev/cu.usbmodem144101
 esptool.py --chip esp32c3 write_flash 0x10000 builds/firmware-v16.0-custom.bin
 
 # Monitor serial output
-pio device monitor -b 115200
+# pio device monitor -b 115200  # Often fails with termios error
+stty -f /dev/cu.usbmodem144101 115200 && cat /dev/cu.usbmodem144101  # Reliable alternative
 
 # Static analysis
 pio check --fail-on-defect low --fail-on-defect medium --fail-on-defect high
@@ -122,6 +127,25 @@ git merge pr-<PR_NUMBER> --no-edit
 # Or cherry-pick: git cherry-pick <commit-hash>
 ```
 
+## Settings System Critical Patterns
+
+**CRITICAL: Settings Serialization Order**
+- `src/CrossPointSettings.cpp` - saveToFile() and loadFromFile() must use IDENTICAL order
+- New settings MUST be added at END of sequence (after last field, before "New fields" comment)
+- NEVER insert new settings in middle - breaks backward compatibility with existing settings.bin files
+- Increment `SETTINGS_COUNT` constant when adding new settings
+- Pattern for new field:
+  ```cpp
+  serialization::writePod(outputFile, sleepScreenCoverFilter);
+  serialization::writePod(outputFile, newSettingHere);  // ADD AT END
+  // New fields added at end for backward compatibility
+  ```
+
+**Settings Corruption Recovery:**
+- Symptom: `abort() at PC 0x420f8b3f` crash after SD card detection
+- Cause: Mismatch between firmware's expected settings order and SD card's settings.bin
+- Fix: Remove SD card to boot with defaults, or reflash correct firmware
+
 ## Important Files for Common Issues
 
 | Issue | Check These Files |
@@ -143,6 +167,19 @@ git merge pr-<PR_NUMBER> --no-edit
 - Settings serialize in order: `serialization::writePod(outputFile, fieldName)`
 - Use `readAndValidate(file, field, MAX_VALUE)` for enums with bounds
 - Load order must match save order exactly
+
+## v16.0 PR Integration Fixes
+
+**PR #506: Settings Serialization Order**
+- **Issue**: Added `powerButtonHoldDuration` in middle of serialization sequence
+- **Impact**: Broke backward compatibility, caused abort() crashes when loading old settings.bin
+- **Fix**: Moved to end of sequence in CrossPointSettings.cpp:152
+- **Pattern**: Always add new settings at END (see Settings System section above)
+
+**PR #433: Delete Cache Null Checks**
+- **Issue**: `section` pointer could be null when deleting cache
+- **Fix**: Added null checks in EpubReaderActivity.cpp before accessing section->currentPage
+- **Pattern**: `uint16_t backupPage = section ? section->currentPage : 0;`
 
 ## Backup Firmware Files
 
