@@ -139,7 +139,7 @@ void enterNewActivity(Activity* activity) {
 }
 
 // Verify power button press duration on wake-up from deep sleep
-// Pre-condition: wakeByPowerButton == true
+// Pre-condition: isWakeupByPowerButton() == true
 void verifyPowerButtonDuration() {
   if (SETTINGS.shortPwrBtn == CrossPointSettings::SHORT_PWRBTN::SLEEP) {
     // Fast path for short press
@@ -314,7 +314,6 @@ void setup() {
   setupDisplayAndFonts();
 
   exitActivity();
-
   enterNewActivity(new BootActivity(renderer, mappedInputManager));
 
   APP_STATE.loadFromFile();
