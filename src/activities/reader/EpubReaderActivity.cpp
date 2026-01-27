@@ -282,8 +282,8 @@ void EpubReaderActivity::onReaderMenuConfirm(EpubReaderMenuActivity::MenuAction 
         // 2. BACKUP: Read current progress
         // We use the current variables that track our position
         uint16_t backupSpine = currentSpineIndex;
-        uint16_t backupPage = section->currentPage;
-        uint16_t backupPageCount = section->pageCount;
+        uint16_t backupPage = section ? section->currentPage : 0;
+        uint16_t backupPageCount = section ? section->pageCount : 0;
 
         section.reset();
         // 3. WIPE: Clear the cache directory
