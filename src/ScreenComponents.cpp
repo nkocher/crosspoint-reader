@@ -71,7 +71,7 @@ void ScreenComponents::fillPopupProgress(const GfxRenderer& renderer, const Popu
 
   renderer.fillRect(barX, barY, fillWidth, barHeight, true);
 
-  renderer.displayBuffer(EInkDisplay::FAST_REFRESH);
+  renderer.displayBuffer(HalDisplay::FAST_REFRESH);
 }
 
 void ScreenComponents::drawBookProgressBar(const GfxRenderer& renderer, const size_t bookProgress) {
