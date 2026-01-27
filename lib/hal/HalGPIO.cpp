@@ -45,11 +45,15 @@ bool HalGPIO::isUsbConnected() const {
 }
 
 bool HalGPIO::isWakeupByPowerButton() const {
+  const bool usbConnected = isUsbConnected();
   const auto wakeupCause = esp_sleep_get_wakeup_cause();
   const auto resetReason = esp_reset_reason();
-  if (isUsbConnected()) {
-    return wakeupCause == ESP_SLEEP_WAKEUP_GPIO;
-  } else {
-    return (wakeupCause == ESP_SLEEP_WAKEUP_UNDEFINED) && (resetReason == ESP_RST_POWERON);
-  }
+  return ((wakeupCause == ESP_SLEEP_WAKEUP_UNDEFINED && resetReason == ESP_RST_POWERON && !usbConnected) ||
+          (wakeupCause == ESP_SLEEP_WAKEUP_GPIO && resetReason == ESP_RST_DEEPSLEEP && usbConnected));
+}
+
+bool HalGPIO::isWakeUpAfterFlash() const {
+  return esp_sleep_get_wakeup_cause() == ESP_SLEEP_WAKEUP_UNDEFINED &&
+         esp_reset_reason() == ESP_RST_UNKNOWN &&
+         isUsbConnected();
 }
