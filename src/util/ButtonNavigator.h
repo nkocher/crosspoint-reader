@@ -12,11 +12,11 @@ class ButtonNavigator final {
   const uint16_t continuousStartMs;
   const uint16_t continuousIntervalMs;
   uint32_t lastContinuousNavTime = 0;
+  bool continuousNavHold = false;
 
   static const MappedInputManager* mappedInput;
 
   [[nodiscard]] bool shouldNavigateContinuously() const;
-  [[nodiscard]] bool recentlyNavigatedContinuously() const;
 
   [[nodiscard]] static Buttons getNextButtons() {
     return {MappedInputManager::Button::Down, MappedInputManager::Button::Right};
@@ -38,9 +38,9 @@ class ButtonNavigator final {
   void onPreviousPress(const Callback& callback);
   void onPress(const Buttons& buttons, const Callback& callback);
 
-  void onNextRelease(const Callback& callback) const;
-  void onPreviousRelease(const Callback& callback) const;
-  void onRelease(const Buttons& buttons, const Callback& callback) const;
+  void onNextRelease(const Callback& callback);
+  void onPreviousRelease(const Callback& callback);
+  void onRelease(const Buttons& buttons, const Callback& callback);
 
   void onNextContinuous(const Callback& callback);
   void onPreviousContinuous(const Callback& callback);
