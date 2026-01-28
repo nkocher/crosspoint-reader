@@ -30,40 +30,37 @@ void ButtonNavigator::onNextContinuous(const Callback& callback) { onContinuous(
 void ButtonNavigator::onPreviousContinuous(const Callback& callback) { onContinuous(getPreviousButtons(), callback); }
 
 void ButtonNavigator::onPress(const Buttons& buttons, const Callback& callback) {
-  if (!mappedInput) return;
+  const bool wasPressed = std::any_of(buttons.begin(), buttons.end(), [](const MappedInputManager::Button button) {
+    return mappedInput != nullptr && mappedInput->wasPressed(button);
+  });
 
-  for (const MappedInputManager::Button button : buttons) {
-    if (mappedInput->wasPressed(button)) {
-      callback();
-      return;
-    }
+  if (wasPressed) {
+    callback();
   }
 }
 
 void ButtonNavigator::onRelease(const Buttons& buttons, const Callback& callback) {
-  if (!mappedInput) return;
+  const bool wasReleased = std::any_of(buttons.begin(), buttons.end(), [](const MappedInputManager::Button button) {
+    return mappedInput != nullptr && mappedInput->wasReleased(button);
+  });
 
-  for (const MappedInputManager::Button button : buttons) {
-    if (mappedInput->wasReleased(button)) {
-      if (lastContinuousNavTime == 0) {
-        callback();
-      }
-
-      lastContinuousNavTime = 0;
-      return;
+  if (wasReleased) {
+    if (lastContinuousNavTime == 0) {
+      callback();
     }
+
+    lastContinuousNavTime = 0;
   }
 }
 
 void ButtonNavigator::onContinuous(const Buttons& buttons, const Callback& callback) {
-  if (!mappedInput) return;
+  const bool isPressed = std::any_of(buttons.begin(), buttons.end(), [this](const MappedInputManager::Button button) {
+    return mappedInput != nullptr && mappedInput->isPressed(button) && shouldNavigateContinuously();
+  });
 
-  for (const MappedInputManager::Button button : buttons) {
-    if (mappedInput->isPressed(button) && shouldNavigateContinuously()) {
-      callback();
-      lastContinuousNavTime = millis();
-      return;
-    }
+  if (isPressed) {
+    callback();
+    lastContinuousNavTime = millis();
   }
 }
 
