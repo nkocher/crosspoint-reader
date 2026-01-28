@@ -411,7 +411,9 @@ void GfxRenderer::invertScreen() const {
   }
 }
 
-void GfxRenderer::displayBuffer(const HalDisplay::RefreshMode refreshMode) const { display.displayBuffer(refreshMode, fadingFix); }
+void GfxRenderer::displayBuffer(const HalDisplay::RefreshMode refreshMode) const {
+  display.displayBuffer(refreshMode, fadingFix);
+}
 
 std::string GfxRenderer::truncatedText(const int fontId, const char* text, const int maxWidth,
                                        const EpdFontFamily::Style style) const {

@@ -37,7 +37,8 @@ class GfxRenderer {
   void rotateCoordinates(int x, int y, int* rotatedX, int* rotatedY) const;
 
  public:
-  explicit GfxRenderer(HalDisplay& halDisplay) : display(halDisplay), renderMode(BW), orientation(Portrait), fadingFix(false) {}
+  explicit GfxRenderer(HalDisplay& halDisplay)
+      : display(halDisplay), renderMode(BW), orientation(Portrait), fadingFix(false) {}
   ~GfxRenderer() { freeBwBufferChunks(); }
 
   static constexpr int VIEWABLE_MARGIN_TOP = 9;
