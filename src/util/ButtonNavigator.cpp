@@ -90,6 +90,11 @@ int ButtonNavigator::previousIndex(const int currentIndex, const int totalItems)
 int ButtonNavigator::nextPageIndex(const int currentIndex, const int totalItems, const int itemsPerPage) {
   if (totalItems <= 0 || itemsPerPage <= 0) return 0;
 
+  // When items fit on one page, use index navigation instead
+  if (totalItems <= itemsPerPage) {
+    return nextIndex(currentIndex, totalItems);
+  }
+
   const int lastPageIndex = (totalItems - 1) / itemsPerPage;
   const int currentPageIndex = currentIndex / itemsPerPage;
 
@@ -102,6 +107,11 @@ int ButtonNavigator::nextPageIndex(const int currentIndex, const int totalItems,
 
 int ButtonNavigator::previousPageIndex(const int currentIndex, const int totalItems, const int itemsPerPage) {
   if (totalItems <= 0 || itemsPerPage <= 0) return 0;
+
+  // When items fit on one page, use index navigation instead
+  if (totalItems <= itemsPerPage) {
+    return previousIndex(currentIndex, totalItems);
+  }
 
   const int lastPageIndex = (totalItems - 1) / itemsPerPage;
   const int currentPageIndex = currentIndex / itemsPerPage;
