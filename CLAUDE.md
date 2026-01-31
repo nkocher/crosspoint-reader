@@ -10,20 +10,21 @@ CrossPoint Reader is an open-source firmware replacement for the Xteink X4 e-pap
 
 ## Current Branch: `custom-v16`
 
-**Base**: v0.16.0 + PRs #442, #506, #433
+**Base**: v0.16.0 + PRs #442, #506, #433, #612, #552, #576, #587, #600
 
-Custom v0.16.0 build with popup refactoring, power button hold duration, and reading menu features.
+Custom v0.16.0 build with popup refactoring, power button hold duration, reading menu, WiFi text fixes, cover dimensions, USB wake fix, boot loop escape, and system-wide continuous navigation.
 
 ### Recent Commits (newest first)
 | Commit | Description |
 |--------|-------------|
+| 4e6aee6 | build: Merge upstream PRs #612, #552, #576, #587, #600 into custom-v16 |
+| 5026659 | Merge branch 'pr-600' into custom-v16 |
+| 22a0966 | Merge branch 'pr-587' into custom-v16 |
+| 6245b0b | Merge branch 'pr-576' into custom-v16 |
+| 6c2716e | Merge branch 'pr-552' into custom-v16 |
+| 8ee0204 | Merge branch 'pr-612' into custom-v16 |
 | cae74ec | build: Update v16.0 custom firmware with serialization fix |
 | acc33d4 | fix: Move powerButtonHoldDuration to end of serialization |
-| 7c49a2a | docs: Update CLAUDE.md for v16.0 custom build |
-| bbbde71 | fix: Add null checks for section in delete cache |
-| 8cc4618 | Merge branch 'pr-433' into custom-v16 |
-| e83a70c | Merge branch 'pr-506' into custom-v16 |
-| fd0e025 | Merge branch 'pr-442' into custom-v16 |
 
 ## Repository Structure
 
@@ -37,7 +38,8 @@ Custom v0.16.0 build with popup refactoring, power button hold duration, and rea
 - `backup/theme-clarity-2026-01-27` - Theme work backup
 
 **Tags:**
-- `v16.0-custom` - Current custom release
+- `v16.0-custom-2` - Current custom release (v16.0 + 8 PRs)
+- `v16.0-custom` - Previous custom release
 - `backup-pre-v16-cleanup` - Backup before cleanup
 
 ## Project Structure
@@ -184,7 +186,7 @@ git merge pr-<PR_NUMBER> --no-edit
 ## Backup Firmware Files
 
 Located in `builds/`:
-- `firmware-v16.0-custom.bin` - Current custom build (v16.0 + PRs)
+- `firmware-v16.0-custom.bin` - Current custom build (v16.0 + 8 PRs)
 - Rollback: `esptool.py --chip esp32c3 write_flash 0x10000 builds/firmware-v16.0-custom.bin`
 
 ## Integrated PRs
@@ -194,6 +196,11 @@ Located in `builds/`:
 | #442 | Popup logic refactoring | Merged to custom-v16 |
 | #506 | Power button hold duration | Merged to custom-v16 |
 | #433 | Reading menu + delete cache | Merged to custom-v16 (with null-check fix) |
+| #612 | WiFi error text fixes | Merged to custom-v16 |
+| #552 | Home cover dimension fix | Merged to custom-v16 |
+| #576 | Don't wake on USB connect | Merged to custom-v16 |
+| #587 | Boot loop escape | Merged to custom-v16 |
+| #600 | System-wide continuous navigation | Merged to custom-v16 (with EpubReaderMenuActivity ButtonNavigator) |
 | #511 | Display epub metadata on Recents | Included in v0.16.0 base |
 | #522 | HAL abstraction (HalDisplay, HalGPIO) | Included in v0.16.0 base |
 
