@@ -10,6 +10,7 @@
 
 #include "../ActivityWithSubactivity.h"
 #include "MappedInputManager.h"
+#include "util/ButtonNavigator.h"
 
 class EpubReaderMenuActivity final : public ActivityWithSubactivity {
  public:
@@ -36,6 +37,7 @@ class EpubReaderMenuActivity final : public ActivityWithSubactivity {
                                            {MenuAction::GO_HOME, "Go Home"},
                                            {MenuAction::DELETE_CACHE, "Delete Book Cache"}};
 
+  ButtonNavigator buttonNavigator;
   int selectedIndex = 0;
   bool updateRequired = false;
   TaskHandle_t displayTaskHandle = nullptr;

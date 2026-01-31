@@ -46,16 +46,7 @@ void EpubReaderMenuActivity::loop() {
     return;
   }
 
-  // Use local variables for items we need to check after potential deletion
-  if (mappedInput.wasReleased(MappedInputManager::Button::Up) ||
-      mappedInput.wasReleased(MappedInputManager::Button::Left)) {
-    selectedIndex = (selectedIndex + menuItems.size() - 1) % menuItems.size();
-    updateRequired = true;
-  } else if (mappedInput.wasReleased(MappedInputManager::Button::Down) ||
-             mappedInput.wasReleased(MappedInputManager::Button::Right)) {
-    selectedIndex = (selectedIndex + 1) % menuItems.size();
-    updateRequired = true;
-  } else if (mappedInput.wasReleased(MappedInputManager::Button::Confirm)) {
+  if (mappedInput.wasReleased(MappedInputManager::Button::Confirm)) {
     // 1. Capture the callback and action locally
     auto actionCallback = onAction;
     auto selectedAction = menuItems[selectedIndex].action;
@@ -69,6 +60,28 @@ void EpubReaderMenuActivity::loop() {
     onBack();
     return;  // Also return here just in case
   }
+
+  const int totalItems = static_cast<int>(menuItems.size());
+
+  buttonNavigator.onNextRelease([this, totalItems] {
+    selectedIndex = ButtonNavigator::nextIndex(selectedIndex, totalItems);
+    updateRequired = true;
+  });
+
+  buttonNavigator.onPreviousRelease([this, totalItems] {
+    selectedIndex = ButtonNavigator::previousIndex(selectedIndex, totalItems);
+    updateRequired = true;
+  });
+
+  buttonNavigator.onNextContinuous([this, totalItems] {
+    selectedIndex = ButtonNavigator::nextIndex(selectedIndex, totalItems);
+    updateRequired = true;
+  });
+
+  buttonNavigator.onPreviousContinuous([this, totalItems] {
+    selectedIndex = ButtonNavigator::previousIndex(selectedIndex, totalItems);
+    updateRequired = true;
+  });
 }
 
 void EpubReaderMenuActivity::renderScreen() {
